@@ -6,13 +6,15 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Imports\EmployeesImport;
 use Maatwebsite\Excel\Facades\Excel;
+use App\Models\Employee;
 
 
 class EmployeeController extends Controller
 {
     public function index()
     {
-        return view('admin.employee.index');
+        $data = Employee::all();
+        return view('admin.employee.index', compact('data'));
     }
 
     public function import()
@@ -22,15 +24,13 @@ class EmployeeController extends Controller
 
     public function importExcelData(Request $request)
     {
-        $request->validate([
-            'import-file' => [
-                'required',
-                'file'
-            ],
-        ]);
+        $data = $request->file('import-file');
 
-        Excel::import(new EmployeesImport, $request->file('import-file'));
+        $namafile = $data->getClientOriginalName();
+        $data->move('EmployeeData', $namafile);
 
-        return redirect()->back()->with('status', 'Imported Successfully');
+        Excel::import(new EmployeesImport, \public_path('EmployeeData/' . $namafile));
+
+        return redirect('admin/employee')->with('status', 'Imported Successfully');
     }
 }

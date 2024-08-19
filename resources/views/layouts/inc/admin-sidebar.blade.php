@@ -2,13 +2,17 @@
     <nav class="sb-sidenav accordion sb-sidenav-dark" id="sidenavAccordion">
         <div class="sb-sidenav-menu">
             <div class="nav">
-                <a class="nav-link" href="dashboard.php">
+                <a class="nav-link" href="{{ url('admin/dashboard') }}">
                     <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
                     Dashboard
                 </a>
-                <a class="nav-link" href="tables.php">
+                <a class="nav-link" href="{{ url('admin/employee') }}">
                     <div class="sb-nav-link-icon"><i class="fas fa-table"></i></div>
-                    Tables
+                    Data Employee
+                </a>
+                <a class="nav-link" href="{{ url('admin/import-employee') }}">
+                    <div class="sb-nav-link-icon"><i class="bi bi-file-earmark-arrow-up-fill"></i></div>
+                    Import Data
                 </a>
                 <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapsePages"
                     aria-expanded="false" aria-controls="collapsePages">

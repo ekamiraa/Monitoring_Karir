@@ -11,6 +11,16 @@ class Employee extends Model
 
     protected $table = 'employees';
 
+    /*
+    protected $fillable = [
+        'no_tes',
+        'nama',
+        'tgl_tes'
+    ];
+    */
+
     protected $guarded = [];
+
+    public $timestamps = false;
 
 }
