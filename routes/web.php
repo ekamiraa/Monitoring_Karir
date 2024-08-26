@@ -28,7 +28,6 @@ Auth::routes();
 
 Route::prefix('admin')->middleware(['auth', 'verified', 'role:admin'])->group(function () {
     Route::get('/dashboard', [App\Http\Controllers\Admin\DashboardController::class, 'index'])->name('admin.dashboard');
-    Route::get('/chart', [App\Http\Controllers\Admin\ChartController::class, 'index']);
     Route::get('employee', [App\Http\Controllers\Admin\EmployeeController::class, 'index']);
     Route::get('import-employee', [App\Http\Controllers\Admin\EmployeeController::class, 'import']);
     Route::post('import-employee', [App\Http\Controllers\Admin\EmployeeController::class, 'importExcelData']);
