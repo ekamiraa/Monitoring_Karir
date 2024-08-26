@@ -4,100 +4,49 @@
 
 @section('content')
 
-<script src="{{ asset('assets/js/mychart.js') }}"></script>
-
 <div class="container-fluid px-4">
-    <h1 class="mt-4">Dashboard</h1>
-    <div class="row">
-        <div class="col-xl-3 col-md-6">
-            <div class="card bg-primary text-white mb-4">
-                <div class="card-body">Primary Card</div>
-                <div class="card-footer d-flex align-items-center justify-content-between">
-                    <a class="small text-white stretched-link" href="#">View Details</a>
-                    <div class="small text-white"><i class="fas fa-angle-right"></i></div>
-                </div>
-            </div>
-        </div>
-        <div class="col-xl-3 col-md-6">
-            <div class="card bg-warning text-white mb-4">
-                <div class="card-body">Warning Card</div>
-                <div class="card-footer d-flex align-items-center justify-content-between">
-                    <a class="small text-white stretched-link" href="#">View Details</a>
-                    <div class="small text-white"><i class="fas fa-angle-right"></i></div>
-                </div>
-            </div>
-        </div>
-        <div class="col-xl-3 col-md-6">
-            <div class="card bg-success text-white mb-4">
-                <div class="card-body">Success Card</div>
-                <div class="card-footer d-flex align-items-center justify-content-between">
-                    <a class="small text-white stretched-link" href="#">View Details</a>
-                    <div class="small text-white"><i class="fas fa-angle-right"></i></div>
-                </div>
-            </div>
-        </div>
-        <div class="col-xl-3 col-md-6">
-            <div class="card bg-danger text-white mb-4">
-                <div class="card-body">Danger Card</div>
-                <div class="card-footer d-flex align-items-center justify-content-between">
-                    <a class="small text-white stretched-link" href="#">View Details</a>
-                    <div class="small text-white"><i class="fas fa-angle-right"></i></div>
-                </div>
-            </div>
-        </div>
-    </div>
+    <h1 class="mt-4 mb-4">Dashboard</h1>
     <div class="card mb-4">
         <div class="card-header">
             <i class="fas fa-chart-area me-1"></i>
-            Area Chart Example
+            Posisi yang Dilamar
         </div>
         <div class="card-body">
-            <canvas id="myChart" width="100%" height="30"></canvas>
+            <canvas id="positionChart" width="100%" height="30"></canvas>
         </div>
-        <div class="card-footer small text-muted">Updated yesterday at 11:59 PM</div>
     </div>
     <div class="row">
-        <div class="col-lg-6">
+        <div class="col-lg-7">
             <div class="card mb-4">
                 <div class="card-header">
                     <i class="fas fa-chart-bar me-1"></i>
-                    Bar Chart Example
+                    Distribusi Area
                 </div>
-                <div class="card-body"><canvas id="acquisitions" width="100%" height="50"></canvas></div>
-                <div class="card-footer small text-muted">Updated yesterday at 11:59 PM</div>
+                <div class="card-body"><canvas id="areaChart" width="100%" height="50"></canvas></div>
             </div>
         </div>
-        <div class="col-lg-6">
+        <div class="col-lg-5">
             <div class="card mb-4">
                 <div class="card-header">
                     <i class="fas fa-chart-pie me-1"></i>
-                    Pie Chart Example
+                    Distribusi Umur
                 </div>
-                <div class="card-body"><canvas id="myChart" width="100%" height="50"></canvas></div>
-                <div class="card-footer small text-muted">Updated yesterday at 11:59 PM</div>
+                <div class="card-body"><canvas id="ageChart" width="100%" height="72.75"></canvas></div>
             </div>
         </div>
     </div>
     <div class="card-body">
         <canvas id="myChart" width="100%" height="30"></canvas>
     </div>
-    <div class="card-body">
-        <h1>Halo</h1>
-    </div>
 </div>
 <script>
-    // Data yang akan digunakan dalam chart
-    const data = [
-        { year: 2017, count: 10 },
-        { year: 2018, count: 20 },
-        { year: 2019, count: 30 },
-        { year: 2020, count: 40 },
-        { year: 2021, count: 50 }
-    ];
+    // Chart Posisi yang Dilamar
+    const positionData = @json($position);
 
-    // Membuat chart
+    console.log(positionData); // Add this to debug
+
     new Chart(
-        document.getElementById('acquisitions'),
+        document.getElementById('positionChart'),
         {
             type: 'bar',
             options: {
@@ -112,11 +61,65 @@
                 }
             },
             data: {
-                labels: data.map(row => row.year),
+                labels: positionData.map(d => d.posisi),
                 datasets: [
                     {
-                        label: 'Acquisitions by year',
-                        data: data.map(row => row.count),
+                        label: 'Total',
+                        data: positionData.map(d => d.total),
+                        backgroundColor: 'rgba(52, 152, 219,0.2)',
+                        borderColor: 'rgba(52, 152, 219,1.0)',
+                        borderWidth: 1
+                    }
+                ]
+            }
+        }
+    );
+
+
+    // Chart Distribusi Umur
+    const ageData = @json($age);
+
+    console.log(ageData); // Add this to debug
+
+    const ageGroups = {
+        '17 - 19': 0,
+        '20 - 25': 0,
+        '26 - 30': 0,
+        '31 - 40': 0,
+        '41+': 0
+    };
+
+    console.log(ageGroups);
+
+    ageData.forEach(d => {
+        if (d.umur >= 17 && d.umur <= 19) ageGroups['17 - 19'] += d.total;
+        if (d.umur >= 20 && d.umur <= 25) ageGroups['20 - 25'] += d.total;
+        else if (d.umur >= 26 && d.umur <= 30) ageGroups['26 - 30'] += d.total;
+        else if (d.umur >= 31 && d.umur <= 40) ageGroups['31 - 40'] += d.total;
+        else if (d.umur >= 41) ageGroups['41+'] += d.total;
+    });
+
+    new Chart(
+        document.getElementById('ageChart'),
+        {
+            type: 'bar',
+            options: {
+                animation: false,
+                plugins: {
+                    legend: {
+                        display: false
+                    },
+                    tooltip: {
+                        enabled: false
+                    }
+                }
+            },
+            data: {
+                labels: Object.keys(ageGroups),
+                datasets: [
+                    {
+                        label: 'Total',
+                        data: Object.values(ageGroups),
                         backgroundColor: 'rgba(75, 192, 192, 0.2)',
                         borderColor: 'rgba(75, 192, 192, 1)',
                         borderWidth: 1
@@ -125,10 +128,69 @@
             }
         }
     );
+
+
+    // Chart Distribusi Umur
+    const areaData = @json($area);
+
+    console.log(areaData); // Add this to debug
+
+    const processedAreaData = {
+        labels: [],
+        totals: []
+    };
+
+    console.log(processedAreaData); // Add this to debug
+
+    areaData.forEach(d => {
+        if (d.total > 5) {
+            processedAreaData.labels.push(d.area_nama);
+            processedAreaData.totals.push(d.total);
+        } else {
+            const index = processedAreaData.labels.indexOf("OTHER");
+            if (index === -1) {
+                processedAreaData.labels.push("OTHER");
+                processedAreaData.totals.push(d.total);
+            } else {
+                processedAreaData.totals[index] += d.total;
+            }
+        }
+    });
+
+    new Chart(
+        document.getElementById('areaChart'),
+        {
+            type: 'doughnut',
+            options: {
+                animation: false,
+                plugins: {
+                    legend: {
+                        display: false
+                    },
+                    tooltip: {
+                        enabled: false
+                    }
+                }
+            },
+            data: {
+                labels: processedAreaData.labels,
+                datasets: [
+                    {
+                        label: 'Total',
+                        data: processedAreaData.totals,
+                        backgroundColor: processedAreaData.labels.map((_, index) => {
+                            return index % 2 === 0
+                                ? 'rgba(52, 152, 219, 0.5)'  // First color
+                                : 'rgba(75, 192, 192, 0.5)'; // Second color
+                        }),
+
+                        borderWidth: 1
+                    }
+                ]
+            }
+        }
+    );
+
+
 </script>
 @endsection
-
-<script src="{{ asset('assets/js/mychart.js') }}"></script>
-@push('scripts')
-    <script src="{{ asset('assets/js/mychart.js') }}"></script>
-@endpush
